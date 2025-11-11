@@ -1,0 +1,67 @@
+[
+  {
+    "Id": 1,
+    "name": "enterprise",
+    "color": "#2563eb"
+  },
+  {
+    "Id": 2,
+    "name": "startup",
+    "color": "#10b981"
+  },
+  {
+    "Id": 3,
+    "name": "hot-lead",
+    "color": "#ef4444"
+  },
+  {
+    "Id": 4,
+    "name": "decision-maker",
+    "color": "#f59e0b"
+  },
+  {
+    "Id": 5,
+    "name": "technical",
+    "color": "#8b5cf6"
+  },
+  {
+    "Id": 6,
+    "name": "follow-up",
+    "color": "#06b6d4"
+  },
+  {
+    "Id": 7,
+    "name": "qualified",
+    "color": "#10b981"
+  },
+  {
+    "Id": 8,
+    "name": "proposal-sent",
+    "color": "#3b82f6"
+  },
+  {
+    "Id": 9,
+    "name": "warm-lead",
+    "color": "#f59e0b"
+  },
+  {
+    "Id": 10,
+    "name": "cold-lead",
+    "color": "#6b7280"
+  },
+  {
+    "Id": 11,
+    "name": "referral",
+    "color": "#10b981"
+  },
+  {
+    "Id": 12,
+    "name": "evaluation",
+    "color": "#8b5cf6"
+  },
+  {
+    "Id": 13,
+    "name": "healthcare",
+    "color": "#059669"
+  }
+]

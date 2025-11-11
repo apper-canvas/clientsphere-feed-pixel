@@ -1,0 +1,170 @@
+import React, { useState } from "react"
+import Button from "@/components/atoms/Button"
+import Input from "@/components/atoms/Input"
+import TextArea from "@/components/atoms/TextArea"
+import { contactService } from "@/services/api/contactService"
+import { toast } from "react-toastify"
+
+const ContactForm = ({ contact, onSave, onCancel }) => {
+  const [formData, setFormData] = useState({
+    name: contact?.name || "",
+    email: contact?.email || "",
+    phone: contact?.phone || "",
+    company: contact?.company || "",
+    title: contact?.title || "",
+    tags: contact?.tags?.join(", ") || "",
+    notes: contact?.notes || ""
+  })
+  
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
+  
+  const validateForm = () => {
+    const newErrors = {}
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required"
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required"
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid"
+    }
+    
+    if (!formData.company.trim()) {
+      newErrors.company = "Company is required"
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if (!validateForm()) {
+      toast.error("Please fix the errors before submitting")
+      return
+    }
+    
+    setLoading(true)
+    
+    try {
+      const contactData = {
+        ...formData,
+        tags: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag)
+      }
+      
+      let savedContact
+      if (contact?.Id) {
+        savedContact = await contactService.update(contact.Id, contactData)
+        toast.success("Contact updated successfully")
+      } else {
+        savedContact = await contactService.create(contactData)
+        toast.success("Contact created successfully")
+      }
+      
+      onSave(savedContact)
+    } catch (error) {
+      toast.error(error.message || "Failed to save contact")
+    } finally {
+      setLoading(false)
+    }
+  }
+  
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: "" }))
+    }
+  }
+  
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Input
+          label="Full Name"
+          required
+          value={formData.name}
+          onChange={(e) => handleChange("name", e.target.value)}
+          error={errors.name}
+          placeholder="John Doe"
+        />
+        
+        <Input
+          label="Email Address"
+          type="email"
+          required
+          value={formData.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+          error={errors.email}
+          placeholder="john@company.com"
+        />
+        
+        <Input
+          label="Phone Number"
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => handleChange("phone", e.target.value)}
+          error={errors.phone}
+          placeholder="(555) 123-4567"
+        />
+        
+        <Input
+          label="Company"
+          required
+          value={formData.company}
+          onChange={(e) => handleChange("company", e.target.value)}
+          error={errors.company}
+          placeholder="Acme Corporation"
+        />
+        
+        <Input
+          label="Job Title"
+          value={formData.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          error={errors.title}
+          placeholder="VP of Sales"
+        />
+        
+        <Input
+          label="Tags"
+          value={formData.tags}
+          onChange={(e) => handleChange("tags", e.target.value)}
+          error={errors.tags}
+          placeholder="enterprise, hot-lead, decision-maker"
+        />
+      </div>
+      
+      <TextArea
+        label="Notes"
+        rows={4}
+        value={formData.notes}
+        onChange={(e) => handleChange("notes", e.target.value)}
+        error={errors.notes}
+        placeholder="Additional notes about this contact..."
+      />
+      
+      <div className="flex justify-end space-x-3 pt-6 border-t border-slate-200">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          loading={loading}
+        >
+          {contact?.Id ? "Update Contact" : "Create Contact"}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+export default ContactForm

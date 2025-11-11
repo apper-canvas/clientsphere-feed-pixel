@@ -1,0 +1,119 @@
+[
+  {
+    "Id": 1,
+    "contactId": 1,
+    "dealId": 1,
+    "type": "call",
+    "description": "Initial discovery call to understand requirements and pain points",
+    "timestamp": "2024-01-10T10:00:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 2,
+    "contactId": 1,
+    "dealId": 1,
+    "type": "email",
+    "description": "Sent enterprise pricing proposal and feature comparison document",
+    "timestamp": "2024-01-12T14:30:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 3,
+    "contactId": 1,
+    "dealId": 1,
+    "type": "meeting",
+    "description": "Demo session with technical team to showcase enterprise features",
+    "timestamp": "2024-01-14T15:00:00Z",
+    "createdBy": "Sales Engineer"
+  },
+  {
+    "Id": 4,
+    "contactId": 2,
+    "dealId": 2,
+    "type": "email",
+    "description": "Follow-up email with startup pricing options and onboarding timeline",
+    "timestamp": "2024-01-09T09:15:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 5,
+    "contactId": 2,
+    "dealId": 2,
+    "type": "call",
+    "description": "Technical requirements discussion and integration planning",
+    "timestamp": "2024-01-12T16:30:00Z",
+    "createdBy": "Technical Consultant"
+  },
+  {
+    "Id": 6,
+    "contactId": 3,
+    "dealId": 3,
+    "type": "meeting",
+    "description": "Stakeholder presentation to executive team and decision makers",
+    "timestamp": "2024-01-08T11:00:00Z",
+    "createdBy": "Account Executive"
+  },
+  {
+    "Id": 7,
+    "contactId": 3,
+    "dealId": 3,
+    "type": "email",
+    "description": "Formal proposal sent with implementation roadmap and pricing",
+    "timestamp": "2024-01-14T13:45:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 8,
+    "contactId": 4,
+    "dealId": 4,
+    "type": "note",
+    "description": "Contact referred by existing customer John Doe from similar startup",
+    "timestamp": "2024-01-07T10:20:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 9,
+    "contactId": 5,
+    "dealId": 5,
+    "type": "call",
+    "description": "Cold outreach call to introduce our solution and schedule demo",
+    "timestamp": "2024-01-04T14:00:00Z",
+    "createdBy": "BDR"
+  },
+  {
+    "Id": 10,
+    "contactId": 5,
+    "dealId": 5,
+    "type": "email",
+    "description": "Demo invitation with calendar link and preparatory materials",
+    "timestamp": "2024-01-09T10:30:00Z",
+    "createdBy": "Sales Rep"
+  },
+  {
+    "Id": 11,
+    "contactId": 6,
+    "dealId": 6,
+    "type": "meeting",
+    "description": "Technical deep-dive on compliance features and security architecture",
+    "timestamp": "2024-01-10T14:00:00Z",
+    "createdBy": "Solutions Architect"
+  },
+  {
+    "Id": 12,
+    "contactId": 6,
+    "dealId": 6,
+    "type": "call",
+    "description": "Contract negotiation and final terms discussion",
+    "timestamp": "2024-01-15T16:00:00Z",
+    "createdBy": "Account Executive"
+  },
+  {
+    "Id": 13,
+    "contactId": 6,
+    "dealId": 6,
+    "type": "email",
+    "description": "Contract signed and welcome package sent for onboarding",
+    "timestamp": "2024-01-16T14:30:00Z",
+    "createdBy": "Customer Success"
+  }
+]

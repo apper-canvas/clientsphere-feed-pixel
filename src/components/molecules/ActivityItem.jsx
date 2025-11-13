@@ -27,7 +27,7 @@ const ActivityItem = ({ activity, isLast = false }) => {
   return (
     <div className="flex items-start space-x-4">
       <div className="relative">
-        <div className={cn("p-2 rounded-full", getActivityColor(activity.type))}>
+<div className={cn("p-2 rounded-full", getActivityColor(activity.type_c || activity.type))}>
           <ApperIcon name={getActivityIcon(activity.type)} className="w-4 h-4" />
         </div>
         {!isLast && (
@@ -37,13 +37,13 @@ const ActivityItem = ({ activity, isLast = false }) => {
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <p className="text-14 font-medium text-slate-900 capitalize">{activity.type}</p>
-          <span className="text-12 text-slate-500">
-            {format(new Date(activity.timestamp), "MMM d, h:mm a")}
+<p className="text-14 font-medium text-slate-900 capitalize">{activity.type_c || activity.type}</p>
+<span className="text-12 text-slate-500">
+            {format(new Date(activity.CreatedOn || activity.timestamp), "MMM d, h:mm a")}
           </span>
         </div>
-        <p className="text-14 text-slate-600 mt-1">{activity.description}</p>
-        <p className="text-12 text-slate-500 mt-1">by {activity.createdBy}</p>
+<p className="text-14 text-slate-600 mt-1">{activity.description_c || activity.description}</p>
+        <p className="text-12 text-slate-500 mt-1">by {activity.CreatedBy?.Name || activity.createdBy || 'System'}</p>
       </div>
     </div>
   )

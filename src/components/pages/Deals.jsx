@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { useOutletContext, useNavigate } from "react-router-dom"
-import Header from "@/components/organisms/Header"
-import PipelineBoard from "@/components/organisms/PipelineBoard"
-import DealForm from "@/components/organisms/DealForm"
-import Card from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import Loading from "@/components/ui/Loading"
-import ErrorView from "@/components/ui/ErrorView"
-import { dealService } from "@/services/api/dealService"
-import { toast } from "react-toastify"
+import React, { useEffect, useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { dealService } from "@/services/api/dealService";
+import { toast } from "react-toastify";
+import Loading from "@/components/ui/Loading";
+import ErrorView from "@/components/ui/ErrorView";
+import PipelineBoard from "@/components/organisms/PipelineBoard";
+import DealForm from "@/components/organisms/DealForm";
+import Header from "@/components/organisms/Header";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
 
 const Deals = () => {
   const { onMenuClick } = useOutletContext()
@@ -48,23 +48,26 @@ const Deals = () => {
     setShowForm(false)
   }
   
-  const calculateMetrics = () => {
+const calculateMetrics = () => {
     const totalDeals = deals.length
     const activeDeals = deals.filter(deal => 
-      !["Closed Won", "Closed Lost"].includes(deal.stage)
+      !["Closed Won", "Closed Lost"].includes(deal.stage_c || deal.stage)
     ).length
-    const wonDeals = deals.filter(deal => deal.stage === "Closed Won").length
-    const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0)
+    const wonDeals = deals.filter(deal => (deal.stage_c || deal.stage) === "Closed Won").length
+    const totalValue = deals.reduce((sum, deal) => sum + (deal.value_c || deal.value || 0), 0)
     const pipelineValue = deals
-      .filter(deal => !["Closed Won", "Closed Lost"].includes(deal.stage))
-      .reduce((sum, deal) => sum + deal.value, 0)
+      .filter(deal => !["Closed Won", "Closed Lost"].includes(deal.stage_c || deal.stage))
+      .reduce((sum, deal) => sum + (deal.value_c || deal.value || 0), 0)
+    
+    const winRate = totalDeals > 0 ? Math.round((wonDeals / totalDeals) * 100) : 0
     
     return {
       totalDeals,
       activeDeals,
       wonDeals,
       totalValue,
-      pipelineValue
+      pipelineValue,
+      winRate
     }
   }
   

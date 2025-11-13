@@ -1,72 +1,305 @@
-import contactsData from "@/services/mockData/contacts.json"
-
-let contacts = [...contactsData]
-
-const delay = () => new Promise(resolve => setTimeout(resolve, Math.random() * 300 + 200))
+import { getApperClient } from "@/services/apperClient";
+import { toast } from "react-toastify";
 
 export const contactService = {
   async getAll() {
-    await delay()
-    return [...contacts]
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      const response = await apperClient.fetchRecords('contacts_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "CreatedOn"}},
+          {"field": {"Name": "ModifiedOn"}}
+        ],
+        orderBy: [{"fieldName": "CreatedOn", "sorttype": "DESC"}]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error("Error fetching contacts:", error?.response?.data?.message || error);
+      return [];
+    }
   },
 
   async getById(id) {
-    await delay()
-    const contact = contacts.find(c => c.Id === parseInt(id))
-    if (!contact) {
-      throw new Error("Contact not found")
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      const response = await apperClient.getRecordById('contacts_c', parseInt(id), {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "CreatedOn"}},
+          {"field": {"Name": "ModifiedOn"}}
+        ]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching contact ${id}:`, error?.response?.data?.message || error);
+      return null;
     }
-    return { ...contact }
   },
 
   async create(contactData) {
-    await delay()
-    const maxId = Math.max(...contacts.map(c => c.Id), 0)
-    const newContact = {
-      Id: maxId + 1,
-      ...contactData,
-      createdAt: new Date().toISOString(),
-      lastContactDate: new Date().toISOString()
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      // Map field names to database schema
+      const mappedData = {
+        Name: contactData.name_c || contactData.name || 'New Contact',
+        name_c: contactData.name_c || contactData.name,
+        email_c: contactData.email_c || contactData.email,
+        phone_c: contactData.phone_c || contactData.phone,
+        title_c: contactData.title_c || contactData.title,
+        company_c: contactData.company_c || contactData.company,
+        notes_c: contactData.notes_c || contactData.notes,
+        tags_c: Array.isArray(contactData.tags_c || contactData.tags) 
+          ? (contactData.tags_c || contactData.tags).join(',') 
+          : (contactData.tags_c || contactData.tags || '')
+      };
+
+      // Remove undefined/null values
+      Object.keys(mappedData).forEach(key => {
+        if (mappedData[key] === undefined || mappedData[key] === null || mappedData[key] === '') {
+          delete mappedData[key];
+        }
+      });
+
+      const response = await apperClient.createRecord('contacts_c', {
+        records: [mappedData]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} contacts:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successful.length > 0) {
+          return successful[0].data;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error creating contact:", error?.response?.data?.message || error);
+      return null;
     }
-    contacts.push(newContact)
-    return { ...newContact }
   },
 
   async update(id, contactData) {
-    await delay()
-    const index = contacts.findIndex(c => c.Id === parseInt(id))
-    if (index === -1) {
-      throw new Error("Contact not found")
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      // Map field names to database schema
+      const mappedData = {
+        Id: parseInt(id),
+        ...contactData
+      };
+
+      // Map any legacy field names
+      if (mappedData.name) {
+        mappedData.name_c = mappedData.name;
+        delete mappedData.name;
+      }
+      if (mappedData.email) {
+        mappedData.email_c = mappedData.email;
+        delete mappedData.email;
+      }
+      if (mappedData.phone) {
+        mappedData.phone_c = mappedData.phone;
+        delete mappedData.phone;
+      }
+      if (mappedData.title) {
+        mappedData.title_c = mappedData.title;
+        delete mappedData.title;
+      }
+      if (mappedData.company) {
+        mappedData.company_c = mappedData.company;
+        delete mappedData.company;
+      }
+      if (mappedData.notes) {
+        mappedData.notes_c = mappedData.notes;
+        delete mappedData.notes;
+      }
+      if (mappedData.tags) {
+        mappedData.tags_c = Array.isArray(mappedData.tags) 
+          ? mappedData.tags.join(',') 
+          : mappedData.tags;
+        delete mappedData.tags;
+      }
+
+      // Remove undefined/null values
+      Object.keys(mappedData).forEach(key => {
+        if (mappedData[key] === undefined || mappedData[key] === null || mappedData[key] === '') {
+          delete mappedData[key];
+        }
+      });
+
+      const response = await apperClient.updateRecord('contacts_c', {
+        records: [mappedData]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} contacts:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successful.length > 0) {
+          return successful[0].data;
+        }
+      }
+
+      return null;
+    } catch (error) {
+      console.error(`Error updating contact ${id}:`, error?.response?.data?.message || error);
+      return null;
     }
-    const updatedContact = {
-      ...contacts[index],
-      ...contactData,
-      Id: parseInt(id)
-    }
-    contacts[index] = updatedContact
-    return { ...updatedContact }
   },
 
   async delete(id) {
-    await delay()
-    const index = contacts.findIndex(c => c.Id === parseInt(id))
-    if (index === -1) {
-      throw new Error("Contact not found")
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      const response = await apperClient.deleteRecord('contacts_c', {
+        RecordIds: [parseInt(id)]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+
+      if (response.results) {
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} contacts:`, failed);
+          failed.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+          return false;
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error(`Error deleting contact ${id}:`, error?.response?.data?.message || error);
+      return false;
     }
-    const deletedContact = contacts[index]
-    contacts.splice(index, 1)
-    return { ...deletedContact }
   },
 
   async search(query) {
-    await delay()
-    const searchTerm = query.toLowerCase()
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(searchTerm) ||
-      contact.email.toLowerCase().includes(searchTerm) ||
-      contact.company.toLowerCase().includes(searchTerm) ||
-      contact.title.toLowerCase().includes(searchTerm) ||
-      contact.tags.some(tag => tag.toLowerCase().includes(searchTerm))
-    )
+    try {
+      const apperClient = getApperClient();
+      if (!apperClient) {
+        throw new Error('ApperClient not initialized');
+      }
+
+      const searchTerm = query.toLowerCase();
+      
+      const response = await apperClient.fetchRecords('contacts_c', {
+        fields: [
+          {"field": {"Name": "Id"}},
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "email_c"}},
+          {"field": {"Name": "phone_c"}},
+          {"field": {"Name": "title_c"}},
+          {"field": {"Name": "company_c"}},
+          {"field": {"Name": "notes_c"}},
+          {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "CreatedOn"}}
+        ],
+        whereGroups: [{
+          "operator": "OR",
+          "subGroups": [
+            {"conditions": [{"fieldName": "name_c", "operator": "Contains", "values": [searchTerm]}], "operator": "OR"},
+            {"conditions": [{"fieldName": "email_c", "operator": "Contains", "values": [searchTerm]}], "operator": "OR"},
+            {"conditions": [{"fieldName": "company_c", "operator": "Contains", "values": [searchTerm]}], "operator": "OR"},
+            {"conditions": [{"fieldName": "title_c", "operator": "Contains", "values": [searchTerm]}], "operator": "OR"},
+            {"conditions": [{"fieldName": "tags_c", "operator": "Contains", "values": [searchTerm]}], "operator": "OR"}
+          ]
+        }]
+      });
+
+      if (!response.success) {
+        console.error(response.message);
+        return [];
+      }
+
+      return response.data || [];
+    } catch (error) {
+      console.error(`Error searching contacts:`, error?.response?.data?.message || error);
+      return [];
+    }
   }
-}
+};

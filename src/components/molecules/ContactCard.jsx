@@ -21,11 +21,11 @@ const ContactCard = ({ contact }) => {
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-14">
-            {getInitials(contact.name)}
+{getInitials(contact.name_c || contact.Name || contact.name)}
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">{contact.name}</h3>
-            <p className="text-14 text-slate-600">{contact.title}</p>
+<h3 className="font-semibold text-slate-900">{contact.name_c || contact.Name || contact.name}</h3>
+            <p className="text-14 text-slate-600">{contact.title_c || contact.title}</p>
           </div>
         </div>
         <ApperIcon name="ChevronRight" className="w-4 h-4 text-slate-400" />
@@ -33,12 +33,12 @@ const ContactCard = ({ contact }) => {
       
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-14 text-slate-600">
-          <ApperIcon name="Building2" className="w-4 h-4 mr-2" />
-          {contact.company}
+<ApperIcon name="Building2" className="w-4 h-4 mr-2" />
+          {contact.company_c || contact.company}
         </div>
-        <div className="flex items-center text-14 text-slate-600">
+<div className="flex items-center text-14 text-slate-600">
           <ApperIcon name="Mail" className="w-4 h-4 mr-2" />
-          {contact.email}
+          {contact.email_c || contact.email}
         </div>
         <div className="flex items-center text-14 text-slate-600">
           <ApperIcon name="Phone" className="w-4 h-4 mr-2" />
@@ -47,20 +47,20 @@ const ContactCard = ({ contact }) => {
       </div>
       
       <div className="flex flex-wrap gap-1 mb-4">
-        {contact.tags.slice(0, 3).map(tag => (
+{((contact.tags_c || contact.tags || '').toString().split(',').filter(Boolean)).slice(0, 3).map(tag => (
           <Badge key={tag} variant="primary" size="sm">
-            {tag}
+            {tag.trim()}
           </Badge>
         ))}
-        {contact.tags.length > 3 && (
+        {((contact.tags_c || contact.tags || '').toString().split(',').filter(Boolean)).length > 3 && (
           <Badge variant="default" size="sm">
-            +{contact.tags.length - 3} more
+            +{((contact.tags_c || contact.tags || '').toString().split(',').filter(Boolean)).length - 3} more
           </Badge>
         )}
       </div>
       
       <div className="text-12 text-slate-500 border-t border-slate-100 pt-3">
-        Last contact: {format(new Date(contact.lastContactDate), "MMM d, yyyy")}
+Last contact: {format(new Date(contact.ModifiedOn || contact.lastContactDate || contact.CreatedOn), "MMM d, yyyy")}
       </div>
     </Card>
   )

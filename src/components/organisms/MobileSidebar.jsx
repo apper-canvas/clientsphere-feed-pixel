@@ -64,7 +64,7 @@ const MobileSidebar = ({ isOpen, onClose }) => {
           ))}
         </nav>
         
-        <div className="mt-12 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
+<div className="mt-12 p-4 bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl">
           <div className="flex items-center space-x-3 mb-3">
             <div className="w-8 h-8 bg-gradient-to-r from-accent to-emerald-600 rounded-full flex items-center justify-center">
               <ApperIcon name="Sparkles" className="w-4 h-4 text-white" />
@@ -74,8 +74,24 @@ const MobileSidebar = ({ isOpen, onClose }) => {
               <p className="text-12 text-slate-600">Get advanced features</p>
             </div>
           </div>
-          <button className="w-full px-3 py-2 bg-gradient-to-r from-accent to-emerald-600 text-white text-12 font-medium rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 transform hover:scale-105">
+          <button className="w-full px-3 py-2 bg-gradient-to-r from-accent to-emerald-600 text-white text-12 font-medium rounded-lg hover:from-emerald-700 hover:to-emerald-800 transition-all duration-200 transform hover:scale-105 mb-2">
             Learn More
+          </button>
+          <button
+            onClick={() => {
+              import('@/layouts/Root').then(module => {
+                const { useAuth } = module;
+                const { logout } = useAuth();
+                logout();
+              }).catch(() => {
+                // Fallback logout
+                window.location.href = '/login';
+              });
+            }}
+            className="w-full px-3 py-2 bg-red-600 text-white text-12 font-medium rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+          >
+            <ApperIcon name="LogOut" className="w-4 h-4 mr-2" />
+            Logout
           </button>
         </div>
       </aside>

@@ -15,8 +15,8 @@ const DealCard = ({ deal, contact, onStageChange, isDragging = false }) => {
     }
   }
   
-  const getDaysInStage = () => {
-    return differenceInDays(new Date(), new Date(deal.stageChangedAt))
+const getDaysInStage = () => {
+    return differenceInDays(new Date(), new Date(deal.ModifiedOn || deal.stageChangedAt || deal.CreatedOn))
   }
   
   const getStageColor = (stage) => {
@@ -46,7 +46,7 @@ const DealCard = ({ deal, contact, onStageChange, isDragging = false }) => {
     >
       <div className="space-y-3">
         <div className="flex items-start justify-between">
-          <h3 className="font-semibold text-slate-900 text-14 line-clamp-2">{deal.title}</h3>
+<h3 className="font-semibold text-slate-900 text-14 line-clamp-2">{deal.title_c || deal.title}</h3>
           <ApperIcon name="MoreVertical" className="w-4 h-4 text-slate-400" />
         </div>
         
@@ -64,22 +64,22 @@ const DealCard = ({ deal, contact, onStageChange, isDragging = false }) => {
         </div>
         
         <div className="flex items-center justify-between">
-          <div className="font-bold text-16 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            {formatCurrency(deal.value)}
+<div className="font-bold text-16 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+            {formatCurrency(deal.value_c || deal.value)}
           </div>
-          <Badge variant={getStageColor(deal.stage)} size="sm">
-            {deal.stage}
+<Badge variant={getStageColor(deal.stage_c || deal.stage)} size="sm">
+            {deal.stage_c || deal.stage}
           </Badge>
         </div>
         
         <div className="flex items-center justify-between text-12 text-slate-500 border-t border-slate-100 pt-2">
-          <span>{getDaysInStage()} days in stage</span>
-          <span>{deal.probability}%</span>
+<span>{getDaysInStage()} days in stage</span>
+          <span>{deal.probability_c || deal.probability}%</span>
         </div>
         
-        {deal.expectedCloseDate && (
+{(deal.expectedCloseDate_c || deal.expectedCloseDate) && (
           <div className="text-12 text-slate-500">
-            Expected: {format(new Date(deal.expectedCloseDate), "MMM d")}
+            Expected: {format(new Date(deal.expectedCloseDate_c || deal.expectedCloseDate), "MMM d")}
           </div>
         )}
       </div>

@@ -2,10 +2,11 @@ import React from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import ApperIcon from "@/components/ApperIcon"
 import { cn } from "@/utils/cn"
+import { useAuth } from "@/layouts/Root"
 
 const Sidebar = ({ className }) => {
   const navigate = useNavigate()
-  
+  const { logout } = useAuth()
   const menuItems = [
     { icon: "LayoutDashboard", label: "Dashboard", path: "/" },
     { icon: "Users", label: "Contacts", path: "/contacts" },
@@ -59,15 +60,8 @@ const Sidebar = ({ className }) => {
           Learn More
         </button>
         <button
-          onClick={() => {
-            import('@/layouts/Root').then(module => {
-              const { useAuth } = module;
-              const { logout } = useAuth();
-              logout();
-            }).catch(() => {
-              // Fallback logout
-              window.location.href = '/login';
-            });
+onClick={() => {
+            logout();
           }}
           className="w-full px-3 py-2 bg-red-600 text-white text-12 font-medium rounded-lg hover:bg-red-700 transition-colors"
         >

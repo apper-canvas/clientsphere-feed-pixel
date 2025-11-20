@@ -23,9 +23,30 @@ const Contacts = () => {
   const [error, setError] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const [showForm, setShowForm] = useState(false)
-  const [selectedTags, setSelectedTags] = useState([])
+const [selectedTags, setSelectedTags] = useState([])
   const [viewMode, setViewMode] = useState("grid") // grid or list
   
+  // Handle get contacts functionality
+  const handleGetContacts = async () => {
+    try {
+      setLoading(true)
+      const fetchedContacts = await contactService.getAll()
+      
+      if (fetchedContacts && fetchedContacts.length > 0) {
+        setContacts(fetchedContacts)
+        toast.success(`Successfully loaded ${fetchedContacts.length} contacts`)
+      } else {
+        setContacts([])
+        toast.info('No contacts found')
+      }
+    } catch (error) {
+      console.error('Error getting contacts:', error)
+      toast.error('Failed to load contacts. Please try again.')
+      setContacts([])
+    } finally {
+      setLoading(false)
+    }
+  }
   useEffect(() => {
     loadContacts()
   }, [])
@@ -154,9 +175,12 @@ const getAllTags = () => {
         searchValue={searchTerm}
         onSearchChange={handleSearchChange}
         onSearchClear={handleSearchClear}
-        actionLabel="Add Contact"
+actionLabel="Add Contact"
         actionIcon="UserPlus"
         onAction={() => setShowForm(true)}
+        secondaryActionLabel="Get Contacts"
+        secondaryActionIcon="Download"
+        onSecondaryAction={handleGetContacts}
         onMenuClick={onMenuClick}
       />
       

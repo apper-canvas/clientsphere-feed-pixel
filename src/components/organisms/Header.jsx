@@ -9,10 +9,13 @@ const Header = ({
   searchValue, 
   onSearchChange, 
   onSearchClear,
-  showSearch = false,
+showSearch = false,
   actionLabel,
   actionIcon,
   onAction,
+  secondaryActionLabel,
+  secondaryActionIcon,
+  onSecondaryAction,
   onMenuClick
 }) => {
   return (
@@ -54,6 +57,19 @@ const Header = ({
               variant="primary"
             >
               {actionLabel}
+            </Button>
+)}
+          
+          {/* Secondary Action Button */}
+          {secondaryActionLabel && onSecondaryAction && (
+            <Button
+              onClick={onSecondaryAction}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2"
+            >
+              {secondaryActionIcon && <ApperIcon name={secondaryActionIcon} size={16} />}
+              {secondaryActionLabel}
             </Button>
           )}
           

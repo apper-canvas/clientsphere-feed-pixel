@@ -17,12 +17,12 @@ const Dashboard = () => {
   const { onMenuClick } = useOutletContext()
   const navigate = useNavigate()
   
-  const [contacts, setContacts] = useState([])
+const [contacts, setContacts] = useState([])
   const [deals, setDeals] = useState([])
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  
+  const [weatherLoading, setWeatherLoading] = useState(false)
   useEffect(() => {
     loadDashboardData()
   }, [])
@@ -87,8 +87,68 @@ const Dashboard = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value)
+}
+
+  const handleGetWeather = async () => {
+    setWeatherLoading(true)
+    try {
+      // Initialize ApperClient
+      const { ApperClient } = window.ApperSDK
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      })
+
+      // Get user's location
+      const getLocation = () => {
+        return new Promise((resolve) => {
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                resolve({
+                  lat: position.coords.latitude,
+                  lon: position.coords.longitude
+                })
+              },
+              () => {
+                // Fallback to London coordinates
+                resolve({ lat: 51.5074, lon: -0.1278 })
+              },
+              { timeout: 5000 }
+            )
+          } else {
+            // Fallback to London coordinates
+            resolve({ lat: 51.5074, lon: -0.1278 })
+          }
+        })
+      }
+
+      const location = await getLocation()
+      
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_GET_WEATHER, {
+        body: JSON.stringify(location),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (result.success) {
+        const weather = result.data
+        toast.success(
+          `Weather: ${weather.temperature}°C, ${weather.description}. Humidity: ${weather.humidity}%, Wind: ${weather.windSpeed} m/s`,
+          { autoClose: 8000 }
+        )
+      } else {
+        console.info(`apper_info: Got an error in this function: ${import.meta.env.VITE_GET_WEATHER}. The response body is: ${JSON.stringify(result)}.`)
+        toast.error(result.message || "Failed to fetch weather data")
+      }
+    } catch (error) {
+      console.info(`apper_info: Got this error an this function: ${import.meta.env.VITE_GET_WEATHER}. The error is: ${error.message}`)
+      toast.error("Unable to fetch weather. Please try again.")
+    } finally {
+      setWeatherLoading(false)
+    }
   }
-  
   if (loading) return <Loading />
   if (error) return <ErrorView message={error} onRetry={loadDashboardData} />
   
@@ -207,9 +267,9 @@ const Dashboard = () => {
           </div>
           
           {/* Quick Actions */}
-          <Card className="p-6">
+<Card className="p-6">
             <h2 className="text-20 font-semibold text-slate-900 mb-6">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Button
                 variant="primary"
                 size="lg"
@@ -236,6 +296,16 @@ const Dashboard = () => {
                 className="justify-start"
               >
                 View Analytics
+              </Button>
+              <Button
+                variant="info"
+                size="lg"
+                icon="Cloud"
+                onClick={handleGetWeather}
+                disabled={weatherLoading}
+                className="justify-start"
+              >
+                {weatherLoading ? "Loading..." : "Get Weather"}
               </Button>
             </div>
           </Card>

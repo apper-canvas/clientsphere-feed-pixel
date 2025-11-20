@@ -7,13 +7,13 @@ import { toast } from "react-toastify"
 
 const ContactForm = ({ contact, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    name: contact?.name || "",
-    email: contact?.email || "",
-    phone: contact?.phone || "",
-    company: contact?.company || "",
-    title: contact?.title || "",
-    tags: contact?.tags?.join(", ") || "",
-    notes: contact?.notes || ""
+    name: contact?.name_c || contact?.name || "",
+    email: contact?.email_c || contact?.email || "",
+    phone: contact?.phone_c || contact?.phone || "",
+    company: contact?.company_c || contact?.company || "",
+    title: contact?.title_c || contact?.title || "",
+    tags: (contact?.tags_c ? contact.tags_c.split(',') : contact?.tags || []).join(", "),
+    notes: contact?.notes_c || contact?.notes || ""
   })
   
   const [loading, setLoading] = useState(false)
@@ -50,12 +50,16 @@ const ContactForm = ({ contact, onSave, onCancel }) => {
     
     setLoading(true)
     
-    try {
+try {
       const contactData = {
-        ...formData,
-        tags: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag)
+        name_c: formData.name,
+        email_c: formData.email,
+        phone_c: formData.phone,
+        company_c: formData.company,
+        title_c: formData.title,
+        notes_c: formData.notes,
+        tags_c: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag).join(',')
       }
-      
       let savedContact
       if (contact?.Id) {
         savedContact = await contactService.update(contact.Id, contactData)

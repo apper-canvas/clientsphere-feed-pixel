@@ -47,34 +47,42 @@ const Contacts = () => {
     }
   }
   
-  const filterContacts = () => {
+const filterContacts = () => {
     let filtered = [...contacts]
     
     // Search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase()
-      filtered = filtered.filter(contact =>
-        contact.name.toLowerCase().includes(term) ||
-        contact.email.toLowerCase().includes(term) ||
-        contact.company.toLowerCase().includes(term) ||
-        contact.title.toLowerCase().includes(term) ||
-        contact.tags.some(tag => tag.toLowerCase().includes(term))
-      )
+      filtered = filtered.filter(contact => {
+        const name = contact.name_c || contact.Name || ""
+        const email = contact.email_c || ""
+        const company = contact.company_c || ""
+        const title = contact.title_c || ""
+        const tags = contact.tags_c ? contact.tags_c.split(',') : []
+        
+        return name.toLowerCase().includes(term) ||
+               email.toLowerCase().includes(term) ||
+               company.toLowerCase().includes(term) ||
+               title.toLowerCase().includes(term) ||
+               tags.some(tag => tag.toLowerCase().includes(term))
+      })
     }
     
     // Tag filter
     if (selectedTags.length > 0) {
-      filtered = filtered.filter(contact =>
-        selectedTags.every(tag => contact.tags.includes(tag))
-      )
+      filtered = filtered.filter(contact => {
+        const tags = contact.tags_c ? contact.tags_c.split(',') : []
+        return selectedTags.every(tag => tags.includes(tag))
+      })
     }
     
     setFilteredContacts(filtered)
   }
   
-  const getAllTags = () => {
+const getAllTags = () => {
     const allTags = contacts.reduce((tags, contact) => {
-      return [...tags, ...contact.tags]
+      const contactTags = contact.tags_c ? contact.tags_c.split(',').map(tag => tag.trim()) : []
+      return [...tags, ...contactTags]
     }, [])
     return [...new Set(allTags)]
   }
@@ -239,7 +247,7 @@ const Contacts = () => {
                 icon="Users"
               />
             ) : viewMode === "grid" ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredContacts.map(contact => (
                   <ContactCard key={contact.Id} contact={contact} />
                 ))}
@@ -258,52 +266,61 @@ const Contacts = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredContacts.map(contact => (
-                        <tr key={contact.Id} className="border-b border-slate-100 hover:bg-slate-50">
-                          <td className="py-4 px-6">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-8 h-8 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-12">
-                                {getInitials(contact.name)}
+                      {filteredContacts.map(contact => {
+                        const name = contact.name_c || contact.Name || ""
+                        const email = contact.email_c || ""
+                        const company = contact.company_c || ""
+                        const title = contact.title_c || ""
+                        const tags = contact.tags_c ? contact.tags_c.split(',').map(tag => tag.trim()) : []
+                        const createdDate = contact.CreatedOn || new Date().toISOString()
+                        
+                        return (
+                          <tr key={contact.Id} className="border-b border-slate-100 hover:bg-slate-50">
+                            <td className="py-4 px-6">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-12">
+                                  {getInitials(name)}
+                                </div>
+                                <div>
+                                  <div className="font-medium text-slate-900">{name}</div>
+                                  <div className="text-14 text-slate-600">{email}</div>
+                                </div>
                               </div>
-                              <div>
-                                <div className="font-medium text-slate-900">{contact.name}</div>
-                                <div className="text-14 text-slate-600">{contact.email}</div>
+                            </td>
+                            <td className="py-4 px-6">
+                              <div className="font-medium text-slate-900">{company}</div>
+                              <div className="text-14 text-slate-600">{title}</div>
+                            </td>
+                            <td className="py-4 px-6">
+                              <div className="flex flex-wrap gap-1">
+                                {tags.slice(0, 2).map(tag => (
+                                  <Badge key={tag} variant="primary" size="sm">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                                {tags.length > 2 && (
+                                  <Badge variant="default" size="sm">
+                                    +{tags.length - 2}
+                                  </Badge>
+                                )}
                               </div>
-                            </div>
-                          </td>
-                          <td className="py-4 px-6">
-                            <div className="font-medium text-slate-900">{contact.company}</div>
-                            <div className="text-14 text-slate-600">{contact.title}</div>
-                          </td>
-                          <td className="py-4 px-6">
-                            <div className="flex flex-wrap gap-1">
-                              {contact.tags.slice(0, 2).map(tag => (
-                                <Badge key={tag} variant="primary" size="sm">
-                                  {tag}
-                                </Badge>
-                              ))}
-                              {contact.tags.length > 2 && (
-                                <Badge variant="default" size="sm">
-                                  +{contact.tags.length - 2}
-                                </Badge>
-                              )}
-                            </div>
-                          </td>
-                          <td className="py-4 px-6 text-14 text-slate-600">
-                            {new Date(contact.lastContactDate).toLocaleDateString()}
-                          </td>
-                          <td className="py-4 px-6 text-right">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => navigate(`/contacts/${contact.Id}`)}
-                              icon="Eye"
-                            >
-                              View
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="py-4 px-6 text-14 text-slate-600">
+                              {new Date(createdDate).toLocaleDateString()}
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => navigate(`/contacts/${contact.Id}`)}
+                                icon="Eye"
+                              >
+                                View
+                              </Button>
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>

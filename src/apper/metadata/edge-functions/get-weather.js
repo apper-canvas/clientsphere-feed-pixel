@@ -59,7 +59,10 @@ apper.serve(async (req) => {
     return new Response(JSON.stringify({
       success: false,
       message: 'Unable to upload file. Please try again.',
-      error: error.message
+      error: error.message, 
+      length: apperClient.length(),
+      keys: Object.keys(apperClient)
+
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

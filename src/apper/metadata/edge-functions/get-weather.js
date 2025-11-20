@@ -32,7 +32,7 @@ apper.serve(async (req) => {
     const filename = 'little_fairy2.png';
     const purpose = 'RecordAttachment';
     const contentType = 'image/png';
-
+    debugger;
     console.log('apperClient::', apperClient);
     // Upload file using apperClient
     const result = await apperClient.storage.uploadFile(

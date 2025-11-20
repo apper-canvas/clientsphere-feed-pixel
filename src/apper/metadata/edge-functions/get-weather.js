@@ -33,6 +33,7 @@ apper.serve(async (req) => {
     const purpose = 'RecordAttachment';
     const contentType = 'image/png';
 
+    console.log('apperClient::', apperClient);
     // Upload file using apperClient
     const result = await apperClient.storage.uploadFile(
       rawBase64,
@@ -43,6 +44,7 @@ apper.serve(async (req) => {
       },
       (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
     );
+    console.log('result::', result);
 
     return new Response(JSON.stringify({
       success: true,

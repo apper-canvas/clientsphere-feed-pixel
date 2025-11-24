@@ -26,16 +26,24 @@ apper.serve(async (req) => {
     //     headers: { 'Content-Type': 'application/json' }
     //   });
     // }
-    const rawBase64 = fetch('https://webhook.site/9153bab6-fc87-46ed-9490-5f347e969c05');
-    console.log('rawBase64::', rawBase64)
+    // Fetch base64 data from webhook
+    const webhookResponse = await fetch('https://webhook.site/9153bab6-fc87-46ed-9490-5f347e969c05');
+    const webhookData = await webhookResponse.json();
+    console.log('webhookData::', webhookData);
+    
+    // Extract the base64 content
+    const base64DataUri = webhookData.content; // This includes 'data:image/png;base64,...'
+    console.log('base64DataUri::', base64DataUri);
+    
     // Extract parameters from request
     const filename = 'singlePart_fairy1.png';
     const purpose = 'RecordAttachment';
     const contentType = 'image/png';
     console.log('apperClient::', apperClient);
+    
     // Upload file using apperClient
     const result = await apperClient.storage.uploadFile(
-      rawBase64.content,
+      base64DataUri,
       {
         filename: filename,
         purpose: purpose,
@@ -60,8 +68,7 @@ apper.serve(async (req) => {
       success: false,
       message: 'Unable to upload file. Please try again.',
       error: error.message, 
-      keys: Object.keys(apperClient),
-      rawBase64: rawBase64
+      keys: Object.keys(apperClient)
 
     }), {
       status: 500,

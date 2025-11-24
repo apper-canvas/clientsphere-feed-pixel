@@ -35,7 +35,7 @@ apper.serve(async (req) => {
     console.log('apperClient::', apperClient);
     // Upload file using apperClient
     const result = await apperClient.storage.uploadFile(
-      rawBase64,
+      rawBase64.content,
       {
         filename: filename,
         purpose: purpose,

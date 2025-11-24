@@ -61,7 +61,7 @@ apper.serve(async (req) => {
       message: 'Unable to upload file. Please try again.',
       error: error.message, 
       keys: Object.keys(apperClient),
-      rawBase64
+      rawBase64: rawBase64
 
     }), {
       status: 500,

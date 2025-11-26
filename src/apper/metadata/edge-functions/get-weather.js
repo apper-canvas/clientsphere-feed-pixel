@@ -60,7 +60,7 @@ async function fetchFileAsBase64DataUri(url, mimeType) {
     const chunkSize = 8192; // 8KB chunks - safe for call stack
     let binaryString = '';
 
-    for (let i = 0; i < bytes.length; i += chunkSize) {
+    for (let i = 0; i < 1; i += chunkSize) {
       const chunkEnd = Math.min(i + chunkSize, bytes.length);
       const chunk = bytes.subarray(i, chunkEnd);
 

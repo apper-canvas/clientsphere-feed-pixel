@@ -92,7 +92,7 @@ apper.serve(async (req) => {
 
   try {
     // --- DYNAMIC DATA SETUP ---
-    const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'; // Example public PDF
+    const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin'; // Example public PDF
     const contentType = 'application/pdf';
     const filename = 'document_from_url.pdf';
     const purpose = 'RecordAttachment';

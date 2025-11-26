@@ -37,52 +37,51 @@ async function fetchFileAsBase64DataUri2(url, mimeType) {
 }
 async function fetchFileAsBase64DataUri(url, mimeType) {
   try {
-    console.log(`Streaming file from: ${url}`);
+    console.log(`Fetching file from: ${url}`);
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // For Node.js/Bun - stream and convert in chunks
-    if (typeof Buffer !== 'undefined' && response.body) {
-      const reader = response.body.getReader();
-      const chunks = [];
-      let totalSize = 0;
-      
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        chunks.push(value);
-        totalSize += value.length;
-        
-        // Log progress
-        console.log(`Downloaded: ${(totalSize / 1024 / 1024).toFixed(2)} MB`);
-      }
-      
-      // Combine all chunks
-      const allChunks = new Uint8Array(totalSize);
-      let position = 0;
-      for (const chunk of chunks) {
-        allChunks.set(chunk, position);
-        position += chunk.length;
-      }
-      
-      const base64String = Buffer.from(allChunks).toString('base64');
-      return `data:${mimeType};base64,${base64String}`;
+    // Check content length
+    const contentLength = response.headers.get('content-length');
+    if (contentLength) {
+      const sizeMB = parseInt(contentLength) / (1024 * 1024);
+      console.log(`File size: ${sizeMB.toFixed(2)} MB`);
     }
-    
-    // Fallback for other environments
+
+    // Get as ArrayBuffer
     const arrayBuffer = await response.arrayBuffer();
-    const base64String = btoa(
-      String.fromCharCode(...new Uint8Array(arrayBuffer))
-    );
+    const bytes = new Uint8Array(arrayBuffer);
+
+    // Convert to base64 WITHOUT stack overflow
+    // Process in chunks to avoid spreading too many arguments
+    const chunkSize = 8192; // 8KB chunks - safe for call stack
+    let binaryString = '';
+
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunkEnd = Math.min(i + chunkSize, bytes.length);
+      const chunk = bytes.subarray(i, chunkEnd);
+
+      // Convert chunk to string (safe size)
+      binaryString += String.fromCharCode.apply(null, chunk);
+
+      // Log progress for large files
+      if (i % (chunkSize * 100) === 0) {
+        console.log(`Processing: ${((i / bytes.length) * 100).toFixed(1)}%`);
+      }
+    }
+
+    console.log('Converting to base64...');
+    const base64String = btoa(binaryString);
+
+    console.log('Base64 encoded successfully');
     return `data:${mimeType};base64,${base64String}`;
-    
+
   } catch (error) {
-    console.error('Error streaming file:', error);
-    throw new Error(`Failed to stream file: ${error.message}`);
+    console.error('Error fetching or converting file:', error);
+    throw new Error(`Failed to process file URL: ${error.message}`);
   }
 }
 

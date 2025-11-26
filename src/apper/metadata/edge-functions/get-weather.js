@@ -105,22 +105,22 @@ apper.serve(async (req) => {
     console.log('base64DataUri successfully generated (length: ' + base64DataUri.length + ')');
     
     // Upload file using apperClient
-    // const result = await apperClient.storage.uploadFile(
-    //   base64DataUri,
-    //   {
-    //     filename: filename,
-    //     purpose: purpose,
-    //     contentType: contentType
-    //   },
-    //   (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
-    // );
+    const result = await apperClient.storage.uploadFile(
+      base64DataUri,
+      {
+        filename: filename,
+        purpose: purpose,
+        contentType: contentType
+      },
+      (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
+    );
 
-    // console.log('result::', result);
+    console.log('result::', result);
 
     return new Response(JSON.stringify({
       success: true,
       message: 'File uploaded successfully from URL.',
-      uploadResult: base64DataUri
+      uploadResult: result
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }

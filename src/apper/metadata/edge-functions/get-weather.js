@@ -93,8 +93,8 @@ apper.serve(async (req) => {
   try {
     // --- DYNAMIC DATA SETUP ---
     const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin'; // Example public PDF
-    const contentType = 'application/pdf';
-    const filename = 'document_from_url.pdf';
+    const contentType = 'application/octet-stream';
+    const filename = 'hetzner-100MB.bin';
     const purpose = 'RecordAttachment';
     // -------------------------
 

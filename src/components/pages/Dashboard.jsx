@@ -134,11 +134,10 @@ const [contacts, setContacts] = useState([])
 
       if (result.success) {
         const weather = result.data
-        toast.success('get weather success', {autoClose: 8000})
-        // toast.success(
-        //   `Weather: ${weather.temperature}°C, ${weather.description}. Humidity: ${weather.humidity}%, Wind: ${weather.windSpeed} m/s`,
-        //   { autoClose: 8000 }
-        // )
+        toast.success(
+          `Weather: ${weather.temperature}°C, ${weather.description}. Humidity: ${weather.humidity}%, Wind: ${weather.windSpeed} m/s`,
+          { autoClose: 8000 }
+        )
       } else {
         console.info(`apper_info: Got an error in this function: ${import.meta.env.VITE_GET_WEATHER}. The response body is: ${JSON.stringify(result)}.`)
         toast.error(result.message || "Failed to fetch weather data")

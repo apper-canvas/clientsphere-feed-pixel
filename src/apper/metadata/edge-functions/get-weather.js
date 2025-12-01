@@ -92,7 +92,7 @@ apper.serve(async (req) => {
 
   try {
     // --- DYNAMIC DATA SETUP ---
-    const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin'; // Example public PDF
+     const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'
     const contentType = 'application/octet-stream';
     const filename = 'hetzner-100MB.bin';
     const purpose = 'RecordAttachment';
@@ -102,7 +102,7 @@ apper.serve(async (req) => {
     // const base64DataUri = await fetchFileAsBase64DataUri(pdfUrl, contentType);
     
     // 2. The base64DataUri now contains the full string, e.g., 'data:application/pdf;base64,JVBERi0xLjc...'
-    console.log('base64DataUri successfully generated (length: ' + base64DataUri.length + ')');
+    // console.log('base64DataUri successfully generated (length: ' + base64DataUri.length + ')');
     
     // Upload file using apperClient
     // const result = await apperClient.storage.uploadFile(

@@ -99,21 +99,32 @@ apper.serve(async (req) => {
     // -------------------------
 
     // 1. Fetch the file and convert it to the Base64 Data URL format
-    const base64DataUri = await fetchFileAsBase64DataUri(pdfUrl, contentType);
+    // const base64DataUri = await fetchFileAsBase64DataUri(pdfUrl, contentType);
     
     // 2. The base64DataUri now contains the full string, e.g., 'data:application/pdf;base64,JVBERi0xLjc...'
     console.log('base64DataUri successfully generated (length: ' + base64DataUri.length + ')');
     
     // Upload file using apperClient
-    const result = await apperClient.storage.uploadFile(
-      base64DataUri,
-      {
-        filename: filename,
-        purpose: purpose,
-        contentType: contentType
-      },
+    // const result = await apperClient.storage.uploadFile(
+    //   base64DataUri,
+    //   {
+    //     filename: filename,
+    //     purpose: purpose,
+    //     contentType: contentType
+    //   },
+    //   (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
+    // );
+        const result = await apperClient.storage.uploadFileFromUrl(
+      pdfUrl,
+      null,
+      // {
+      //   filename: filename,
+      //   purpose: purpose,
+      //   contentType: contentType
+      // },
       (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
     );
+
 
     console.log('result::', result);
 

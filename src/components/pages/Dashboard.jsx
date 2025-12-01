@@ -135,7 +135,7 @@ const [contacts, setContacts] = useState([])
       if (result.success) {
         const weather = result.data
         toast.success(
-          `Weather: ${weather.temperature}°C, ${weather.description}. Humidity: ${weather.humidity}%, Wind: ${weather.windSpeed} m/s`,
+          `Weather: ${weather?.temperature}°C, ${weather?.description}. Humidity: ${weather?.humidity}%, Wind: ${weather?.windSpeed} m/s`,
           { autoClose: 8000 }
         )
       } else {

@@ -92,7 +92,9 @@ apper.serve(async (req) => {
 
   try {
     // --- DYNAMIC DATA SETUP ---
-     const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'
+    //  const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'
+        const pdfUrl = 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'; // Example public PDF
+
     const contentType = 'application/octet-stream';
     const filename = 'hetzner-100MB.bin';
     const purpose = 'RecordAttachment';

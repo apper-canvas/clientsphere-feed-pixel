@@ -18,7 +18,8 @@ apper.serve(async (req) => {
    //  const pdfUrl = 'https://cartographicperspectives.org/index.php/journal/article/view/cp43-complete-issue/pdf';
   //  const pdfUrl ='http://ipv4.download.thinkbroadband.com/100MB.zip'
    //  const pdfUrl = 'https://drive.google.com/file/d/15JxC3fFbUd9GGXaDePsbljKwaPCKB3rX/view?usp=sharing'
-   const pdfUrl = 'http://speedtest.tele2.net/200MB.zip';
+   //const pdfUrl = 'http://speedtest.tele2.net/200MB.zip';
+      const pdfUrl = 'https://link.testfile.org/iK7sKT';
   // const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
    // const filename = 'hetzner-100MB.bin';
   // const purpose = 'RecordAttachment';

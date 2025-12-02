@@ -20,9 +20,10 @@ const Dashboard = () => {
 const [contacts, setContacts] = useState([])
   const [deals, setDeals] = useState([])
   const [activities, setActivities] = useState([])
-  const [loading, setLoading] = useState(true)
+const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [weatherLoading, setWeatherLoading] = useState(false)
+  const [fileLoading, setFileLoading] = useState(false)
   useEffect(() => {
     loadDashboardData()
   }, [])
@@ -89,7 +90,7 @@ const [contacts, setContacts] = useState([])
     }).format(value)
 }
 
-  const handleGetWeather = async () => {
+const handleGetWeather = async () => {
     setWeatherLoading(true)
     try {
       // Initialize ApperClient
@@ -147,6 +148,39 @@ const [contacts, setContacts] = useState([])
       toast.error("Unable to fetch weather. Please try again.")
     } finally {
       setWeatherLoading(false)
+    }
+  }
+
+  const handleCreateContact = async () => {
+    setFileLoading(true)
+    try {
+      // Initialize ApperClient
+      const { ApperClient } = window.ApperSDK
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      })
+
+      const result = await apperClient.functions.invoke(import.meta.env.VITE_CREATE_RECORD_WITH_FILE, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (result.success) {
+        toast.success(
+          `File uploaded successfully! Upload time: ${result.uploadTimeMs}ms`,
+          { autoClose: 8000 }
+        )
+      } else {
+        console.info(`apper_info: Got an error in this function: ${import.meta.env.VITE_CREATE_RECORD_WITH_FILE}. The response body is: ${JSON.stringify(result)}.`)
+        toast.error(result.message || "Failed to create contact with file")
+      }
+    } catch (error) {
+      console.info(`apper_info: Got this error an this function: ${import.meta.env.VITE_CREATE_RECORD_WITH_FILE}. The error is: ${error.message}`)
+      toast.error("Unable to create contact with file. Please try again.")
+    } finally {
+      setFileLoading(false)
     }
   }
   if (loading) return <Loading />
@@ -296,7 +330,7 @@ const [contacts, setContacts] = useState([])
                 className="justify-start"
               >
                 View Analytics
-              </Button>
+</Button>
               <Button
                 variant="info"
                 size="lg"
@@ -306,6 +340,16 @@ const [contacts, setContacts] = useState([])
                 className="justify-start"
               >
                 {weatherLoading ? "Loading..." : "Get Weather"}
+              </Button>
+              <Button
+                variant="success"
+                size="lg"
+                icon="FileText"
+                onClick={handleCreateContact}
+                disabled={fileLoading}
+                className="justify-start"
+              >
+                {fileLoading ? "Loading..." : "Create contact with file"}
               </Button>
             </div>
           </Card>

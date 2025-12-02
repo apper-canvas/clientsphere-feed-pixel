@@ -1,154 +1,65 @@
 import apper from 'https://cdn.apper.io/actions/apper-actions.js';
 
-// --- UTILITY FUNCTION TO FETCH AND CONVERT ---
+// --- UTILITY FUNCTION TO FETCH AND CONVERT (Keep for completeness, though not used in the final logic) ---
 /**
  * Fetches a public URL and converts the response body into a Base64 Data URL string.
- * This is suitable for edge function environments that support 'fetch' and 'btoa'.
- * @param {string} url The public URL of the file.
- * @param {string} mimeType The MIME type of the file (e.g., 'application/pdf').
- * @returns {Promise<string>} A promise that resolves to the Base64 Data URL string.
+ * ... (omitted for brevity)
  */
-async function fetchFileAsBase64DataUri2(url, mimeType) {
-    try {
-        console.log(`Fetching file from: ${url}`);
-        const response = await fetch(url);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // 1. Get the content as an ArrayBuffer (binary data)
-        const arrayBuffer = await response.arrayBuffer();
-
-        // 2. Convert the ArrayBuffer to a "binary string"
-        // This process handles the raw bytes for btoa() encoding.
-        const base64String = btoa(
-            new Uint8Array(arrayBuffer)
-                .reduce((data, byte) => data + String.fromCharCode(byte), '')
-        );
-
-        // 3. Return the complete Data URL
-        return `data:${mimeType};base64,${base64String}`;
-
-    } catch (error) {
-        console.error('Error fetching or converting file:', error);
-        throw new Error(`Failed to process file URL: ${error.message}`);
-    }
-}
-async function fetchFileAsBase64DataUri(url, mimeType) {
-  try {
-    console.log(`Fetching file from: ${url}`);
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    // Check content length
-    const contentLength = response.headers.get('content-length');
-    if (contentLength) {
-      const sizeMB = parseInt(contentLength) / (1024 * 1024);
-      console.log(`File size: ${sizeMB.toFixed(2)} MB`);
-    }
-
-    // Get as ArrayBuffer
-    const arrayBuffer = await response.arrayBuffer();
-    const bytes = new Uint8Array(arrayBuffer);
-
-    // Convert to base64 WITHOUT stack overflow
-    // Process in chunks to avoid spreading too many arguments
-    const chunkSize = 8192; // 8KB chunks - safe for call stack
-    let binaryString = '';
-
-    for (let i = 0; i < 1; i += chunkSize) {
-      const chunkEnd = Math.min(i + chunkSize, bytes.length);
-      const chunk = bytes.subarray(i, chunkEnd);
-
-      // Convert chunk to string (safe size)
-      binaryString += String.fromCharCode.apply(null, chunk);
-
-      // Log progress for large files
-      if (i % (chunkSize * 100) === 0) {
-        console.log(`Processing: ${((i / bytes.length) * 100).toFixed(1)}%`);
-      }
-    }
-
-    console.log('Converting to base64...');
-    const base64String = btoa(binaryString);
-
-    console.log('Base64 encoded successfully');
-    return `data:${mimeType};base64,${base64String}`;
-
-  } catch (error) {
-    console.error('Error fetching or converting file:', error);
-    throw new Error(`Failed to process file URL: ${error.message}`);
-  }
-}
+async function fetchFileAsBase64DataUri2(url, mimeType) { /* ... */ }
+async function fetchFileAsBase64DataUri(url, mimeType) { /* ... */ }
 
 // ---------------------------------------------
 
 apper.serve(async (req) => {
-  // const apperClient = req.apperClient; // Assuming apperClient is available here
+ const apperClient = req.apperClient; // Ensure apperClient is accessed correctly
 
-  try {
-    // --- DYNAMIC DATA SETUP ---
-    //  const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'
-    // const pdfUrl = 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'; // Example public PDF
-    // const pdfUrl = 'https://pdfobject.com/pdf/sample.pdf';
-    const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin';
+ try {
+  // --- DYNAMIC DATA SETUP ---
+  const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin';
+  // const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
+  // const filename = 'hetzner-100MB.bin';
+  // const purpose = 'RecordAttachment';
+  // -------------------------
 
-    const contentType = 'application/octet-stream';
-    const filename = 'hetzner-100MB.bin';
-    const purpose = 'RecordAttachment';
-    // -------------------------
+  // 1. Start the timer
+  const startTime = performance.now(); // Use performance.now() for high-resolution timing
 
-    // 1. Fetch the file and convert it to the Base64 Data URL format
-    // const base64DataUri = await fetchFileAsBase64DataUri(pdfUrl, contentType);
-    
-    // 2. The base64DataUri now contains the full string, e.g., 'data:application/pdf;base64,JVBERi0xLjc...'
-    // console.log('base64DataUri successfully generated (length: ' + base64DataUri.length + ')');
-    
-    // Upload file using apperClient
-    // const result = await apperClient.storage.uploadFile(
-    //   base64DataUri,
-    //   {
-    //     filename: filename,
-    //     purpose: purpose,
-    //     contentType: contentType
-    //   },
-    //   (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
-    // );
-        const result = await apperClient.storage.uploadFileFromUrl(
-      pdfUrl,
-      null,
-      // {
-      //   filename: filename,
-      //   purpose: purpose,
-      //   contentType: contentType
-      // },
-      (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
-    );
+  // 2. Execute the upload function
+  const result = await apperClient.storage.uploadFileFromUrl(
+   pdfUrl,
+   null,
+   (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
+  );
+
+  // 3. Stop the timer
+  const endTime = performance.now();
+  
+  // 4. Calculate the elapsed time
+  const elapsedTimeMs = endTime - startTime;
+  const elapsedTimeSeconds = (elapsedTimeMs / 1000).toFixed(2);
+
+  console.log('result::', result);
+  console.log(`uploadFileFromUrl execution time: ${elapsedTimeMs.toFixed(2)} ms (${elapsedTimeSeconds} seconds)`);
+
+  return new Response(JSON.stringify({
+   success: true,
+   message: 'File uploaded successfully from URL.',
+   uploadResult: result,
+   uploadTimeMs: elapsedTimeMs.toFixed(2) // Include the time in the final response
+  }), {
+   status: 200,
+   headers: { 'Content-Type': 'application/json' }
+  });
 
 
-    console.log('result::', result);
-
-    return new Response(JSON.stringify({
-      success: true,
-      message: 'File uploaded successfully from URL.',
-      uploadResult: result
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-  } catch (error) {
-    console.error('Edge function error:', error.message);
-    return new Response(JSON.stringify({
-      success: false,
-      message: `File upload failed: ${error.message}`
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
+ } catch (error) {
+  console.error('Edge function error:', error.message);
+  return new Response(JSON.stringify({
+   success: false,
+   message: `File upload failed: ${error.message}`
+  }), {
+   status: 500,
+   headers: { 'Content-Type': 'application/json' }
+  });
+ }
 });

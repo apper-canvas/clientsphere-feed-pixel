@@ -95,7 +95,7 @@ apper.serve(async (req) => {
     //  const pdfUrl = 'https://www.fws.gov/sites/default/files/documents/16w_Appendix_Entire_Document%2810351KB%29.pdf'
     // const pdfUrl = 'https://morth.nic.in/sites/default/files/dd12-13_0.pdf'; // Example public PDF
     // const pdfUrl = 'https://pdfobject.com/pdf/sample.pdf';
-    const pdfUrl = 'file:///C:/Users/dream/Downloads/100mb.pdf';
+    const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin';
 
     const contentType = 'application/octet-stream';
     const filename = 'hetzner-100MB.bin';

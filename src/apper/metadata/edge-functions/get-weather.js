@@ -11,7 +11,6 @@ async function fetchFileAsBase64DataUri(url, mimeType) { /* ... */ }
 // ---------------------------------------------
 
 apper.serve(async (req) => {
- const apperClient = req.apperClient; // Ensure apperClient is accessed correctly
 
  try {
   // --- DYNAMIC DATA SETUP ---

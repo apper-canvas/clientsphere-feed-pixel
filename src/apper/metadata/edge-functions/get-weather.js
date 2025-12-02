@@ -14,7 +14,8 @@ apper.serve(async (req) => {
 
  try {
   // --- DYNAMIC DATA SETUP ---
-  const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin';
+   // const pdfUrl = 'https://ash-speed.hetzner.com/100MB.bin';
+   const pdfUrl = 'https://cartographicperspectives.org/index.php/journal/article/view/cp43-complete-issue/pdf';
   // const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
   // const filename = 'hetzner-100MB.bin';
   // const purpose = 'RecordAttachment';

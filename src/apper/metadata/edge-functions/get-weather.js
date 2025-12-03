@@ -33,12 +33,13 @@ apper.serve(async (req) => {
 
   // 2. Execute the upload function
   const result = await apperClient.storage.uploadFileFromUrl(
-   pdfUrl,
-    {
-      filename: filename,
-      purpose: purpose,
-      contentType: contentType
-    },
+    pdfUrl,
+   null,
+    // {
+    //   filename: filename,
+    //   purpose: purpose,
+    //   contentType: contentType
+    // },
    (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
   );
 

@@ -1,12 +1,13 @@
-import React, { useState } from "react"
-import Button from "@/components/atoms/Button"
-import Input from "@/components/atoms/Input"
-import TextArea from "@/components/atoms/TextArea"
-import { contactService } from "@/services/api/contactService"
-import { toast } from "react-toastify"
-
-const ContactForm = ({ contact, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
+import React, { useState } from "react";
+import ApperFileFieldComponent from "@/components/atoms/FileUploader/ApperFileFieldComponent";
+import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import TextArea from "@/components/atoms/TextArea";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import { contactService } from "@/services/contactService";
+function ContactForm({ contact, onSubmit, onCancel, submitLabel = "Save Contact" }) {
+const [formData, setFormData] = useState({
     name: contact?.name_c || contact?.name || "",
     email: contact?.email_c || contact?.email || "",
     phone: contact?.phone_c || contact?.phone || "",
@@ -15,6 +16,8 @@ const ContactForm = ({ contact, onSave, onCancel }) => {
     tags: (contact?.tags_c ? contact.tags_c.split(',') : contact?.tags || []).join(", "),
     notes: contact?.notes_c || contact?.notes || ""
   })
+
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
@@ -51,6 +54,18 @@ const ContactForm = ({ contact, onSave, onCancel }) => {
     setLoading(true)
     
 try {
+// Get files from ApperFileFieldComponent
+      let files = [];
+      try {
+        if (window.ApperSDK && window.ApperSDK.ApperFileUploader) {
+          const { ApperFileUploader } = window.ApperSDK;
+          files = await ApperFileUploader.FileField.getFiles('file_c');
+        }
+      } catch (error) {
+        console.warn('Could not retrieve files from file field:', error);
+        files = uploadedFiles; // Fallback to state
+      }
+
       const contactData = {
         name_c: formData.name,
         email_c: formData.email,
@@ -58,9 +73,10 @@ try {
         company_c: formData.company,
         title_c: formData.title,
         notes_c: formData.notes,
-        tags_c: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag).join(',')
+        tags_c: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag).join(','),
+        ...(files && files.length > 0 && { file_c: files })
       }
-      let savedContact
+let savedContact
       if (contact?.Id) {
         savedContact = await contactService.update(contact.Id, contactData)
         toast.success("Contact updated successfully")
@@ -69,7 +85,7 @@ try {
         toast.success("Contact created successfully")
       }
       
-      onSave(savedContact)
+      onSubmit(savedContact)
     } catch (error) {
       toast.error(error.message || "Failed to save contact")
     } finally {
@@ -132,12 +148,30 @@ try {
           placeholder="VP of Sales"
         />
         
-        <Input
+<Input
           label="Tags"
           value={formData.tags}
           onChange={(e) => handleChange("tags", e.target.value)}
           error={errors.tags}
           placeholder="enterprise, hot-lead, decision-maker"
+        />
+      </div>
+
+      <div>
+        <label className="block text-14 font-medium text-gray-700 mb-2">
+          Attachments
+        </label>
+        <ApperFileFieldComponent
+          elementId="file_c"
+          config={{
+            fieldKey: 'file_c',
+            fieldName: 'file_c',
+            tableName: 'contacts_c',
+            apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+            apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY,
+            existingFiles: contact?.file_c || [],
+            fileCount: contact?.file_c?.length || 0
+          }}
         />
       </div>
       

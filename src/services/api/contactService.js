@@ -9,7 +9,7 @@ export const contactService = {
         throw new Error('ApperClient not initialized');
       }
 
-      const response = await apperClient.fetchRecords('contacts_c', {
+const response = await apperClient.fetchRecords('contacts_c', {
         fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
@@ -20,6 +20,7 @@ export const contactService = {
           {"field": {"Name": "company_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "file_c"}},
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "ModifiedOn"}}
         ],
@@ -46,7 +47,7 @@ async getAll() {
       }
 
       const response = await apperClient.fetchRecords('contacts_c', {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
@@ -56,6 +57,7 @@ async getAll() {
           {"field": {"Name": "company_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "file_c"}},
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "ModifiedOn"}}
         ],
@@ -87,7 +89,7 @@ async getAll() {
       }
 
       const response = await apperClient.getRecordById('contacts_c', parseInt(id), {
-        fields: [
+fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
@@ -97,6 +99,7 @@ async getAll() {
           {"field": {"Name": "company_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "file_c"}},
           {"field": {"Name": "CreatedOn"}},
           {"field": {"Name": "ModifiedOn"}}
         ]
@@ -127,13 +130,16 @@ async getAll() {
         Name: contactData.name_c || contactData.name || 'New Contact',
         name_c: contactData.name_c || contactData.name,
         email_c: contactData.email_c || contactData.email,
-        phone_c: contactData.phone_c || contactData.phone,
+phone_c: contactData.phone_c || contactData.phone,
         title_c: contactData.title_c || contactData.title,
         company_c: contactData.company_c || contactData.company,
         notes_c: contactData.notes_c || contactData.notes,
         tags_c: Array.isArray(contactData.tags_c || contactData.tags) 
           ? (contactData.tags_c || contactData.tags).join(',') 
-          : (contactData.tags_c || contactData.tags || '')
+          : (contactData.tags_c || contactData.tags || ''),
+        ...(contactData.file_c && Array.isArray(contactData.file_c) && contactData.file_c.length > 0 && {
+          file_c: contactData.file_c
+        })
       };
 
       // Remove undefined/null values
@@ -207,7 +213,7 @@ async getAll() {
         delete mappedData.title;
       }
       if (mappedData.company) {
-        mappedData.company_c = mappedData.company;
+mappedData.company_c = mappedData.company;
         delete mappedData.company;
       }
       if (mappedData.notes) {
@@ -219,6 +225,9 @@ async getAll() {
           ? mappedData.tags.join(',') 
           : mappedData.tags;
         delete mappedData.tags;
+      }
+      if (mappedData.file_c && Array.isArray(mappedData.file_c) && mappedData.file_c.length > 0) {
+        // File field already in correct format for update
       }
 
       // Remove undefined/null values
@@ -314,9 +323,10 @@ async getAll() {
           {"field": {"Name": "email_c"}},
           {"field": {"Name": "phone_c"}},
           {"field": {"Name": "title_c"}},
-          {"field": {"Name": "company_c"}},
+{"field": {"Name": "company_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "tags_c"}},
+          {"field": {"Name": "file_c"}},
           {"field": {"Name": "CreatedOn"}}
         ],
         whereGroups: [{

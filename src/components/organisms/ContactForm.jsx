@@ -5,7 +5,7 @@ import ApperIcon from "@/components/ApperIcon";
 import TextArea from "@/components/atoms/TextArea";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
-import { contactService } from "@/services/contactService";
+import { contactService } from "@/services/api/contactService";
 function ContactForm({ contact, onSubmit, onCancel, submitLabel = "Save Contact" }) {
 const [formData, setFormData] = useState({
     name: contact?.name_c || contact?.name || "",

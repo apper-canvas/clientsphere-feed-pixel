@@ -2,43 +2,6 @@ import { getApperClient } from "@/services/apperClient";
 import { toast } from "react-toastify";
 
 export const contactService = {
-  async getAll() {
-    try {
-      const apperClient = getApperClient();
-      if (!apperClient) {
-        throw new Error('ApperClient not initialized');
-      }
-
-const response = await apperClient.fetchRecords('contacts_c', {
-        fields: [
-          {"field": {"Name": "Id"}},
-          {"field": {"Name": "Name"}},
-          {"field": {"Name": "name_c"}},
-          {"field": {"Name": "email_c"}},
-          {"field": {"Name": "phone_c"}},
-          {"field": {"Name": "title_c"}},
-          {"field": {"Name": "company_c"}},
-          {"field": {"Name": "notes_c"}},
-          {"field": {"Name": "tags_c"}},
-          {"field": {"Name": "file_c"}},
-          {"field": {"Name": "CreatedOn"}},
-          {"field": {"Name": "ModifiedOn"}}
-        ],
-        orderBy: [{"fieldName": "CreatedOn", "sorttype": "DESC"}]
-      });
-
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
-        return [];
-      }
-
-      return response.data || [];
-    } catch (error) {
-      console.error("Error fetching contacts:", error?.response?.data?.message || error);
-      return [];
-    }
-  },
 async getAll() {
     try {
       const apperClient = getApperClient();
@@ -88,8 +51,8 @@ fields: [
         throw new Error('ApperClient not initialized');
       }
 
-      const response = await apperClient.getRecordById('contacts_c', parseInt(id), {
-fields: [
+const response = await apperClient.getRecordById('contacts_c', parseInt(id), {
+        fields: [
           {"field": {"Name": "Id"}},
           {"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},

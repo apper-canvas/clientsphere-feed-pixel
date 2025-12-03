@@ -22,9 +22,9 @@ apper.serve(async (req) => {
    // const pdfUrl = 'https://link.testfile.org/iK7sKT';
    //  const pdfUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4';
    //  const pdfUrl = 'https://pdfobject.com/pdf/sample.pdf'
-  const pdfUrl = 'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf'
-  const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
-   const filename = 'hetzner-100MB.bin';
+   const pdfUrl = 'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf';
+   const contentType = 'application/pdf'; // These are not needed for uploadFileFromUrl's basic call
+   const filename = 'document_file.pdf';
   const purpose = 'RecordAttachment';
   // -------------------------
 

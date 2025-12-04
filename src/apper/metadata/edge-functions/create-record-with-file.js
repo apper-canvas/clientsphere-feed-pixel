@@ -36,33 +36,33 @@ apper.serve(async (req) => {
   );
    console.log('result::', result);
 
-  //  const TABLE_NAME = 'contacts_c';
-  //  const params = {
-  //    "records": [
-  //      {
-  //        "Name": "Justin",
-  //        "name_c": "Justin",
-  //        "email_c": "justin@test.com",
-  //        "phone_c": "12346793",
-  //        "title_c": "Sales",
-  //        "company_c": "testing",
-  //        "notes_c": "testing",
-  //        "file_c": [
-  //          {
-  //            "Name": result.data.fileName,
-  //            "Path": result.data.location,
-  //            "Size": result.data.fileSizeKB,
-  //            "Type": result.data.contentType,
-  //            "IsExternal": false,
-  //            "Ordinal": 1
-
-  //          }
-  //        ]
-  //      }
-  //    ]
-  //  }
-  //  const response = await apperClient.createRecord(TABLE_NAME, params);
-  //  console.log('create record response::', response)
+   const TABLE_NAME = 'contacts_c';
+   const params = {
+     "records": [
+       {
+         "Name": "Justin",
+         "name_c": "Justin",
+         "email_c": "justin@test.com",
+         "phone_c": "12346793",
+         "title_c": "Sales",
+         "company_c": "testing",
+         "notes_c": "testing",
+         "file_c": [
+           {
+             "Name": result.data.fileName,
+             "Path": result.data.location,
+             "Size": result.data.fileSizeKB,
+             "Type": result.data.contentType,
+             "IsExternal": false,
+             "Ordinal": 1
+           }
+         ]
+       }
+     ]
+   }
+   
+   const response = await apperClient.createRecord(TABLE_NAME, params);
+   console.log('create record response::', response)
 
   // 3. Stop the timer
   const endTime = performance.now();
@@ -77,7 +77,8 @@ apper.serve(async (req) => {
    success: true,
    message: 'File uploaded successfully from URL.',
    uploadResult: result,
-    uploadTimeMs: elapsedTimeMs.toFixed(2) // Include the time in the final response
+    uploadTimeMs: elapsedTimeMs.toFixed(2), // Include the time in the final response
+    createResponse: response
   }), {
    status: 200,
    headers: { 'Content-Type': 'application/json' }

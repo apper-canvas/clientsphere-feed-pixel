@@ -124,7 +124,7 @@ const getAllTags = () => {
     )
   }
   
-  const handleContactSave = (savedContact) => {
+const handleContactSave = (savedContact) => {
     setContacts(prev => {
       const existing = prev.find(c => c.Id === savedContact.Id)
       if (existing) {
@@ -134,6 +134,27 @@ const getAllTags = () => {
       }
     })
     setShowForm(false)
+  }
+
+  const handleQuickAddContact = async () => {
+    try {
+      setLoading(true)
+      const quickContactData = {
+        name_c: "New Contact",
+        email_c: "contact@example.com",
+        company_c: "New Company"
+      }
+      
+      const savedContact = await contactService.create(quickContactData)
+      if (savedContact) {
+        setContacts(prev => [...prev, savedContact])
+        toast.success("Quick contact created successfully!")
+      }
+    } catch (error) {
+      toast.error("Failed to create quick contact")
+    } finally {
+      setLoading(false)
+    }
   }
   
   const getInitials = (name) => {
@@ -167,7 +188,7 @@ const getAllTags = () => {
   }
   
   return (
-    <div className="flex flex-col h-full">
+<div className="flex flex-col h-full">
       <Header
         title="Contacts"
         subtitle={`${filteredContacts.length} of ${contacts.length} contacts`}
@@ -175,12 +196,15 @@ const getAllTags = () => {
         searchValue={searchTerm}
         onSearchChange={handleSearchChange}
         onSearchClear={handleSearchClear}
-actionLabel="Add Contact"
+        actionLabel="Add Contact"
         actionIcon="UserPlus"
         onAction={() => setShowForm(true)}
         secondaryActionLabel="Get Contacts"
         secondaryActionIcon="Download"
         onSecondaryAction={handleGetContacts}
+        tertiaryActionLabel="Quick Add"
+        tertiaryActionIcon="UserCheck"
+        onTertiaryAction={handleQuickAddContact}
         onMenuClick={onMenuClick}
       />
       

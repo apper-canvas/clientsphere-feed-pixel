@@ -6,7 +6,7 @@ import TextArea from "@/components/atoms/TextArea";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import { contactService } from "@/services/api/contactService";
-function ContactForm({ contact, onSubmit, onCancel, submitLabel = "Save Contact" }) {
+function ContactForm({ contact, onSave, onCancel, submitLabel = "Save Contact" }) {
 const [formData, setFormData] = useState({
     name: contact?.name_c || contact?.name || "",
     email: contact?.email_c || contact?.email || "",
@@ -85,7 +85,7 @@ let savedContact
         toast.success("Contact created successfully")
       }
       
-      onSubmit(savedContact)
+onSave(savedContact)
     } catch (error) {
       toast.error(error.message || "Failed to save contact")
     } finally {

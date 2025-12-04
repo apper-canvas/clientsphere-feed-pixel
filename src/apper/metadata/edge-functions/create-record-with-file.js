@@ -13,7 +13,8 @@ apper.serve(async (req) => {
    //  const pdfUrl = 'https://drive.google.com/file/d/15JxC3fFbUd9GGXaDePsbljKwaPCKB3rX/view?usp=sharing'
    //const pdfUrl = 'http://speedtest.tele2.net/200MB.zip';
    // const pdfUrl = 'https://link.testfile.org/iK7sKT';
-   const pdfUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4';
+   //  const pdfUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4';
+   const pdfUrl = 'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf';
   // const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
    // const filename = 'hetzner-100MB.bin';
   // const purpose = 'RecordAttachment';
@@ -28,6 +29,35 @@ apper.serve(async (req) => {
    null,
    (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
   );
+   console.log('result::', result);
+
+   const TABLE_NAME = 'contacts_c';
+   const params = {
+     "records": [
+       {
+         "Name": "Danny",
+         "name_c": "Danny",
+         "email_c": "danny@test.com",
+         "phone_c": "12346793",
+         "title_c": "Sales",
+         "company_c": "testing",
+         "notes_c": "testing",
+         "file_c": [
+           {
+             "Name": result.data.fileName,
+             "Path": result.data.location,
+             "Size": result.data.fileSizeKB,
+             "Type": result.data.contentType,
+             "IsExternal": false,
+             "Ordinal": 1
+
+           }
+         ]
+       }
+     ]
+   }
+   const response = await apperClient.createRecord(TABLE_NAME, params);
+   console.log9('create record response::', response)
 
   // 3. Stop the timer
   const endTime = performance.now();
@@ -36,7 +66,6 @@ apper.serve(async (req) => {
   const elapsedTimeMs = endTime - startTime;
   const elapsedTimeSeconds = (elapsedTimeMs / 1000).toFixed(2);
 
-  console.log('result::', result);
   console.log(`uploadFileFromUrl execution time: ${elapsedTimeMs.toFixed(2)} ms (${elapsedTimeSeconds} seconds)`);
 
   return new Response(JSON.stringify({

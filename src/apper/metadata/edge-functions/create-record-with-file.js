@@ -15,9 +15,9 @@ apper.serve(async (req) => {
    // const pdfUrl = 'https://link.testfile.org/iK7sKT';
    //  const pdfUrl = 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4';
    const pdfUrl = 'https://ontheline.trincoll.edu/images/bookdown/sample-local-pdf.pdf';
-  // const contentType = 'application/octet-stream'; // These are not needed for uploadFileFromUrl's basic call
-   // const filename = 'hetzner-100MB.bin';
-  // const purpose = 'RecordAttachment';
+  const contentType = 'application/pdf'; // These are not needed for uploadFileFromUrl's basic call
+   const filename = 'sample-pdf.pdf';
+  const purpose = 'RecordAttachment';
   // -------------------------
 
   // 1. Start the timer
@@ -26,7 +26,12 @@ apper.serve(async (req) => {
   // 2. Execute the upload function
   const result = await apperClient.storage.uploadFileFromUrl(
    pdfUrl,
-   null,
+    //  null,
+    {
+      filename: filename,
+      contentType: contentType, 
+      purpose: purpose
+    },
    (progress) => console.log(`Progress: ${progress.toFixed(1)}%`)
   );
    console.log('result::', result);
@@ -35,9 +40,9 @@ apper.serve(async (req) => {
    const params = {
      "records": [
        {
-         "Name": "Danny",
-         "name_c": "Danny",
-         "email_c": "danny@test.com",
+         "Name": "Justin",
+         "name_c": "Justin",
+         "email_c": "justin@test.com",
          "phone_c": "12346793",
          "title_c": "Sales",
          "company_c": "testing",

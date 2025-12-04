@@ -77,7 +77,8 @@ apper.serve(async (req) => {
    success: true,
    message: 'File uploaded successfully from URL.',
    uploadResult: result,
-   uploadTimeMs: elapsedTimeMs.toFixed(2) // Include the time in the final response
+    uploadTimeMs: elapsedTimeMs.toFixed(2), // Include the time in the final response
+   createResponse: response
   }), {
    status: 200,
    headers: { 'Content-Type': 'application/json' }

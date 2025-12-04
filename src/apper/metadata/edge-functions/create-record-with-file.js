@@ -57,7 +57,7 @@ apper.serve(async (req) => {
      ]
    }
    const response = await apperClient.createRecord(TABLE_NAME, params);
-   console.log9('create record response::', response)
+   console.log('create record response::', response)
 
   // 3. Stop the timer
   const endTime = performance.now();

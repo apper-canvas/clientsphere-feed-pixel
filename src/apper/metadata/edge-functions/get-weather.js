@@ -4,9 +4,9 @@ apper.serve(async (req)=>{
     const params = {
     "records": [
         {
-            "Name": "Travis",
-            "name_c": "Travis",
-            "email_c": "travis@test.com",
+            "Name": "AK",
+            "name_c": "AK",
+            "email_c": "ak@test.com",
             "phone_c": "4632145562",
             "company_c": "testing"
         }

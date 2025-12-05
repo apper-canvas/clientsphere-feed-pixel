@@ -71,14 +71,23 @@ apper.serve(async (req) => {
   const elapsedTimeMs = endTime - startTime;
   const elapsedTimeSeconds = (elapsedTimeMs / 1000).toFixed(2);
 
-  console.log(`uploadFileFromUrl execution time: ${elapsedTimeMs.toFixed(2)} ms (${elapsedTimeSeconds} seconds)`);
+   console.log(`uploadFileFromUrl execution time: ${elapsedTimeMs.toFixed(2)} ms (${elapsedTimeSeconds} seconds)`);
+   const recordId = response.results[0].data.Id;
+   const attachmentId = response.results[0].data.file_c[0].Id;
+   const downloadResult = await apperClient.storage.downloadFile({
+      TABLE_NAME,
+      recordId,
+      attachmentId
+   });
+  
 
   return new Response(JSON.stringify({
    success: true,
    message: 'File uploaded successfully from URL.',
    uploadResult: result,
     uploadTimeMs: elapsedTimeMs.toFixed(2), // Include the time in the final response
-    createResponse: response
+    createResponse: response,
+    downloadResult: downloadResult
   }), {
    status: 200,
    headers: { 'Content-Type': 'application/json' }

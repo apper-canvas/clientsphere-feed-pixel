@@ -74,8 +74,9 @@ apper.serve(async (req) => {
    console.log(`uploadFileFromUrl execution time: ${elapsedTimeMs.toFixed(2)} ms (${elapsedTimeSeconds} seconds)`);
    const recordId = response.results[0].data.Id;
    const attachmentId = response.results[0].data.file_c[0].Id;
+   const tableName = 'contacts_c';
    const downloadResult = await apperClient.storage.downloadFile({
-      TABLE_NAME,
+      tableName,
       recordId,
       attachmentId
    });

@@ -40,9 +40,9 @@ apper.serve(async (req) => {
    const params = {
      "records": [
        {
-         "Name": "Justin",
-         "name_c": "Justin",
-         "email_c": "justin@test.com",
+         "Name": "Cena",
+         "name_c": "Cena",
+         "email_c": "cena@test.com",
          "phone_c": "12346793",
          "title_c": "Sales",
          "company_c": "testing",
@@ -50,7 +50,7 @@ apper.serve(async (req) => {
          "file_c": [
            {
              "Name": result.data.fileName,
-             "Path": result.data.location,
+             "Path": result.data.key,
              "Size": result.data.fileSizeKB,
              "Type": result.data.contentType,
              "IsExternal": false,

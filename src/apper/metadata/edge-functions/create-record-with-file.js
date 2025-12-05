@@ -75,10 +75,15 @@ apper.serve(async (req) => {
    const recordId = response.results[0].data.Id;
    const attachmentId = response.results[0].data.file_c[0].Id;
    const tableName = 'contacts_c';
-   const downloadResult = await apperClient.storage.downloadFile({
-      tableName,
-      recordId,
-      attachmentId
+  //  const downloadResult = await apperClient.storage.downloadFile({
+  //     tableName,
+  //     recordId,
+  //     attachmentId
+   //  });
+   const downloadResult = await apperClient.storage.previewFile({
+     tableName,
+     recordId,
+     attachmentId
    });
   
 
